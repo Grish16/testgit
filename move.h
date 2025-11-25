@@ -40,7 +40,7 @@ public:
 
 
 
-    Animal& operator=(Animal&& other) noexcept
+    Animal& operator=(Animal&& other) 
     {
         if (this != &other) 
         {
@@ -116,3 +116,4 @@ public:
 };
 
 #endif
+
