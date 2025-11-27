@@ -12,9 +12,20 @@ public:
         cout << "Constructor" << endl;
     }
 
+    A(const A& obj) {
+        x++;
+        cout << "Copy Constructor" << endl;
+    }
+ 
+    A(A&& obj) {
+        x++;
+        cout << "Move Constructor" << endl;
+    }
+ 
     ~A() {
         cout << "Destructor" << endl;
     }
+
 
     static int getx() {
         return x;
@@ -28,12 +39,9 @@ int main() {
     A a;
     A b;
     A c;
-    A d;
-    A e;
-    A f;
-    A g;
-    A h;
-    A l;
+
+     A d = a;       
+    A e = std::move(b); 
 
     cout << "obj = " << A::getx() << endl;
 
