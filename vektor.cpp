@@ -1,93 +1,90 @@
 #include <iostream>
+#include <initializer_list> 
 using namespace std;
 
-class Vector {
-private:
+class V {
     int* data;
-    int sz;
-    int cap;
+    size_t sz;
+    size_t cap;
 
 public:
-    Vector(int capacity = 6) {
-        cap = capacity;
-        sz = 0;
+
+    V() : data(nullptr), sz(0), cap(0) {}
+
+
+    V(initializer_list<int> init) {
+        sz = init.size();
+        cap = sz;
         data = new int[cap];
-    }
-
-    ~Vector() {
-        delete[] data;
-    }
-
-    Vector(const Vector& other) {
-        sz = other.sz;
-        cap = other.cap;
-        data = new int[cap];
-        for (int i = 0; i < sz; i++)
-            data[i] = other.data[i];
-    }
-
-    Vector& operator=(const Vector& other) {
-        if (this == &other)
-            return *this;
-
-        delete[] data;
-
-        sz = other.sz;
-        cap = other.cap;
-        data = new int[cap];
-        for (int i = 0; i < sz; i++)
-            data[i] = other.data[i];
-
-        return *this;
-    }
-
-    void push_back(int value) {
-        if (sz < cap) {
-            data[sz++] = value;
-        } else {
-           
+        size_t i = 0;
+        for (int x : init) {
+            data[i++] = x;
         }
     }
 
-    void pop_back() {
-        if (sz > 0)
-            sz--;
+
+    ~V() { delete[] data; }
+
+
+    size_t size() const { return sz; }
+
+ 
+    size_t capacity() const { return cap; }
+
+
+    int& operator[](size_t index) { return data[index]; }
+    const int& operator[](size_t index) const { return data[index]; }
+
+
+    void reserve(size_t new_cap) {
+        if (new_cap <= cap) return;
+        int* new_data = new int[new_cap];
+        for (size_t i = 0; i < sz; i++)
+            new_data[i] = data[i];
+        delete[] data;
+        data = new_data;
+        cap = new_cap;
     }
 
-    int size() const {
-        return sz;
+
+    void resize(size_t new_size, int val = 0) {
+        if (new_size > cap) reserve(new_size);
+        if (new_size > sz) {
+            for (size_t i = sz; i < new_size; i++)
+                data[i] = val;
+        }
+        sz = new_size;
     }
 
-    int capacity() const {
-        return cap;
+
+    void push_back(int x) {
+        if (sz == cap) reserve(cap == 0 ? 1 : cap * 2);
+        data[sz++] = x;
     }
 
-    int& operator[](int index) {
-        return data[index];
-    }
 
-    void clear() {
-        sz = 0;
+    void print() const {
+        for (size_t i = 0; i < sz; i++)
+            cout << data[i] << " ";
+        cout << endl;
     }
 };
 
 int main() {
-    Vector v;
+    V v = {1, 2, 3, 4}; 
+    v.print();               
 
-    v.push_back(10);
-    v.push_back(20);
-    v.push_back(30);
-    v.push_back(40);
-    v.push_back(50);
-    v.push_back(60);
+    v.push_back(5);
+    v.print();               
 
-    for (int i = 0; i < v.size(); i++) {
-        cout << v[i] << " ";
-    }
-    cout << endl;
+    v.reserve(10);
+    cout << "Capacity: " << v.capacity() << endl; 
 
-    v.pop_back();
-    cout << "Size = " << v.size() << endl;
+    v.resize(8, 0);          
+    v.print();               
+
+    v.resize(3);             
+    v.print();               
 
     return 0;
 }
